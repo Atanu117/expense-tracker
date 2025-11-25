@@ -1,33 +1,23 @@
-package com.atanu.expense_tracker.model;
+package com.atanu.expense_tracker.dto;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "expenses")
-public class Expense {
+public class ExpenseResponseDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
-
     private Double amount;
-
     private String category;
-
     private LocalDate date;
 
-    public Expense() {}
-
-    public Expense(String title, Double amount, String category, LocalDate date) {
+    public ExpenseResponseDTO(Long id, String title, Double amount, String category, LocalDate date) {
+        this.id = id;
         this.title = title;
         this.amount = amount;
         this.category = category;
         this.date = date;
     }
-    // getters + setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -46,12 +36,6 @@ public class Expense {
     public void setAmount(Double amount) {
         this.amount = amount;
     }
-    public LocalDate getDate() {
-        return date;
-    }
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
     public String getCategory() {
         return category;
     }
@@ -59,4 +43,11 @@ public class Expense {
         this.category = category;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 }
+

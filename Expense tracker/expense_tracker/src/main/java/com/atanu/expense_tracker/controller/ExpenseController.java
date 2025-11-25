@@ -1,53 +1,49 @@
 package com.atanu.expense_tracker.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.atanu.expense_tracker.model.Expense;
+import com.atanu.expense_tracker.dto.*;
 import com.atanu.expense_tracker.service.ExpenseService;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
+import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/api/expenses")
+@RequestMapping("/api/v1/expenses")
+@CrossOrigin
 public class ExpenseController {
+
     private final ExpenseService service;
 
-    public ExpenseController(ExpenseService Service) {
-        this.service = Service;
+    public ExpenseController(ExpenseService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public Expense create(@RequestBody Expense expense) {
-        //TODO: process POST request
-        return service.addExpense(expense);
-    }
-    
-    @GetMapping
-    public List<Expense> getAll() {
-        return service.getAllExpenses();
-    }
-    
-    @GetMapping("/{id}")
-    public Expense getById(@PathVariable Long id) {
-        return service.getExpense(id);
+    public ExpenseResponseDTO create(@Valid @RequestBody ExpenseRequestDTO dto) {
+        return service.create(dto);
     }
 
-    @PutMapping("/{id}")
-    public Expense update(@PathVariable Long id, @RequestBody Expense expense) {
-        return service.updateExpense(id, expense);
+    @GetMapping("/{id}")
+    public ExpenseResponseDTO get(@PathVariable Long id) {
+        return service.get(id);
+    }
+
+    @GetMapping
+    public PagedResponse<ExpenseResponseDTO> filter(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Double minAmount,
+            @RequestParam(required = false) Double maxAmount,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return service.filter(category, minAmount, maxAmount, startDate, endDate, page, size);
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
-        return service.deleteExpense(id);
+        service.delete(id);
+        return "Deleted";
     }
 }
